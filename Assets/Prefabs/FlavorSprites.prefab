@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1665186623011506635
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1665186623011506636}
+  - component: {fileID: 1665186623011506637}
+  m_Layer: 0
+  m_Name: FlavorSprites
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1665186623011506636
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1665186623011506635}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 605.76733, y: 195.9506, z: -145.3754}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1665186623011506637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1665186623011506635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebb3fa51659cb46c5814f0ffd297bed6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourSprite: {fileID: 21300000, guid: 33dd9d6ceefc84948879cd7ae9cd061e, type: 3}
+  sweetSprite: {fileID: 21300000, guid: 6dae7a53d86a84a43a796c2f6225ee27, type: 3}
+  spicySprite: {fileID: 21300000, guid: b63dab409e6164168804335c1792e34c, type: 3}
+  noneSprite: {fileID: 21300000, guid: ff6ea0d2d1e6646b59761fad7b48373b, type: 3}
+  savorySprite: {fileID: 21300000, guid: e0e354a68adad49cfbabdb3959430d51, type: 3}
+  saltySprite: {fileID: 21300000, guid: 8e7fad6e9c7444afebf58630371e416a, type: 3}
