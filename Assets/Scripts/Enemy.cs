@@ -29,12 +29,21 @@ public class Enemy : BasePlayer
 
     public IEnumerator PlayCards(ArrayList cards)
     {
+        ArrayList cardsToDestroy = new ArrayList();
         for (int i = 0; i < cards.Count; i++)
         {
             int cardId = (int)cards[i];
             Card c = GetCardById(cardId);
             gameManager.PlayCard(c, "enemy");
-            Destroy(c.gameObject);
+            cardsToDestroy.Add(c);
+        }
+        for (int i = 0; i < cardsToDestroy.Count; i++)
+        {
+            Card c = (Card)cardsToDestroy[i];
+            if (c)
+            {
+                Destroy(c.gameObject);
+            }
         }
         yield return new WaitForSeconds(2f);
     }

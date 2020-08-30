@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c955026d1a18541f0af5b8b650c82144, type: 3}
+  m_Name: PanSearedSteak
+  m_EditorClassIdentifier: 
+  recipeName: Pan-Seared Steak
+  rating: 0
+  coreIngredients:
+  - {fileID: 11400000, guid: ae92f8fdc884242e1b0e4c25cda70d3c, type: 2}
+  enhancements:
+  - {fileID: 11400000, guid: 8cff8604f987546afa09dc48b80c020d, type: 2}
+  - {fileID: 11400000, guid: 6149da504e13249da9c497617cf60407, type: 2}
+  - {fileID: 11400000, guid: a2a12e19829f14031900c91faeae91ef, type: 2}
+  - {fileID: 11400000, guid: 0c0e23775a6ac4d13a465ef1ffad95b0, type: 2}
+  image: {fileID: 21300000, guid: f05dc06ecd4ed41fc9cb46b15de97d5e, type: 3}

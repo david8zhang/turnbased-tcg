@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     FieldOfPlay enemyField;
 
+    [SerializeField]
+    Combiner combiner;
+
     public void PlayCard(Card card, string side)
     {
         if (side == "player")
@@ -30,6 +33,8 @@ public class GameManager : MonoBehaviour
 
     public void EndPlayerTurn()
     {
+        Recipe r = combiner.CombineIngredients(playerField.GetIngredientsInPlay());
+        Debug.Log(r.recipeName + ": " + r.rating);
         StartCoroutine(enemy.StartTurn());
         player.isTurn = false;
     }

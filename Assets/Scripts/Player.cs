@@ -44,23 +44,6 @@ public class Player : BasePlayer
         }
     }
 
-    public Card GetCardById(int cardId)
-    {
-        if (cardId != -1)
-        {
-            for (int i = 0; i < hand.Count; i++)
-            {
-                Card c = (Card)hand[i];
-                if (c.cardId == cardId)
-                {
-                    return c;
-                }
-            }
-        }
-        return null;
-
-    }
-
     void RemoveSelectedCard()
     {
         if (selectedCardId == -1)
@@ -85,7 +68,6 @@ public class Player : BasePlayer
 
     void SelectCard(int cardId)
     {
-        Debug.Log(isTurn);
         if (!isTurn)
         {
             return;

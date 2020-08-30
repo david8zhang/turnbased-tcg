@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Card : MonoBehaviour
 {
+    public Ingredient ingRef;
     public Image cardBorder;
     public Text cardName;
     public Text cardCost;
@@ -17,6 +18,7 @@ public class Card : MonoBehaviour
 
     public void SetCardInfo(Ingredient ingredientRef)
     {
+        ingRef = ingredientRef;
         cardId = gameObject.GetInstanceID();
         cardName.text = ingredientRef.ingredientName;
         cardCost.text = ingredientRef.cost.ToString();
