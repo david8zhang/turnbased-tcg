@@ -1,51 +1,114 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class Player : MonoBehaviour
+public class Player : BasePlayer
 {
-    [SerializeField]
-    Card cardPrefab;
-
-    [SerializeField]
-    IngredientPool ingredientPool;
-
-    [SerializeField]
-    Transform playerHandLayout;
-
-    Card[] hand;
-    Stack<Ingredient> deck;
-    int numCardsInDeck = 30;
-    int numCardsInHand = 5;
-
+    public bool isTurn;
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
+        isTurn = true;
         GenerateRandomDeck();
         InitHand();
     }
 
-    void GenerateRandomDeck()
+    public void StartTurn()
     {
-        deck = new Stack<Ingredient>();
-        for (int i = 0; i < numCardsInDeck; i++)
-        {
-            deck.Push(ingredientPool.GetRandomIngredient());
-        }
+        base.DrawCards();
     }
 
-    void InitHand()
+    internal override Card CreateCard(Ingredient ing, Vector3 position)
     {
-        Vector3 pos = playerHandLayout.position;
-        hand = new Card[numCardsInHand];
+        Card card = base.CreateCard(ing, position);
+        Button button = card.GetComponent<Button>();
+        button.onClick.AddListener(() => SelectCard(card.cardId));
+        return card;
+    }
+
+    internal override void InitHand()
+    {
+        Vector3 pos = handLayout.position;
         for (int i = 0; i < numCardsInHand; i++)
         {
             Ingredient ing = deck.Pop();
-            Card card = Instantiate(cardPrefab, pos, Quaternion.identity) as Card;
-            card.transform.SetParent(playerHandLayout);
+            Card card = Instantiate(cardPrefab, pos, Quaternion.identity);
+            Button button = card.GetComponent<Button>();
+
+            button.onClick.AddListener(() => SelectCard(card.cardId));
+            card.transform.SetParent(handLayout, false);
             card.SetCardInfo(ing);
-            hand[i] = card;
+            hand.Add(card);
         }
+    }
+
+    public Card GetCardById(int cardId)
+    {
+        if (cardId != -1)
+        {
+            for (int i = 0; i < hand.Count; i++)
+            {
+                Card c = (Card)hand[i];
+                if (c.cardId == cardId)
+                {
+                    return c;
+                }
+            }
+        }
+        return null;
+
+    }
+
+    void RemoveSelectedCard()
+    {
+        if (selectedCardId == -1)
+        {
+            return;
+        }
+        Card cardToRemove = null;
+        int indexToRemove = -1;
+        for (int i = 0; i < hand.Count; i++)
+        {
+            Card c = (Card)hand[i];
+            if (c.cardId == selectedCardId)
+            {
+                cardToRemove = c;
+                indexToRemove = i;
+            }
+        }
+        Destroy(cardToRemove.gameObject);
+        hand.RemoveAt(indexToRemove);
+        selectedCardId = -1;
+    }
+
+    void SelectCard(int cardId)
+    {
+        Debug.Log(isTurn);
+        if (!isTurn)
+        {
+            return;
+        }
+        Card oldSelectedCard = GetCardById(selectedCardId);
+        if (oldSelectedCard)
+        {
+            oldSelectedCard.Deselect();
+        }
+        selectedCardId = cardId;
+        Card newSelectedCard = GetCardById(selectedCardId);
+        newSelectedCard.Select();
+    }
+
+    public void PlayCard()
+    {
+        if (selectedCardId == -1)
+        {
+            return;
+        }
+        Card selectedCard = GetCardById(selectedCardId);
+        selectedCard.Deselect();
+        gameManager.PlayCard(selectedCard, "player");
+        RemoveSelectedCard();
     }
 }
