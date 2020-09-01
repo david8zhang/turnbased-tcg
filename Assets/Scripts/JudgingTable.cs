@@ -60,8 +60,8 @@ public class JudgingTable : MonoBehaviour
         playerDishToJudge.ShowPoints(playerPoints);
         enemyDishToJudge.ShowPoints(enemyPoints);
 
-        AddPoints(Player.keyword, playerPoints);
-        AddPoints(Enemy.keyword, enemyPoints);
+        AddPoints("PLAYER", playerPoints);
+        AddPoints("ENEMY", enemyPoints);
 
         yield return new WaitForSeconds(1f);
         if (playerPoints > enemyPoints)

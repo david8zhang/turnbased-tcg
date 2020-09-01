@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,6 +25,11 @@ public class IngredientCard : Card
         cardCost.text = ingredientRef.cost.ToString();
         cardImage.sprite = ingredientRef.image;
         cardType.sprite = flavorSprites.GetSpriteForFlavorType(ingredientRef.flavorType);
+    }
+
+    public int GetCardCost()
+    {
+        return int.Parse(cardCost.text);
     }
 
     public void Select()

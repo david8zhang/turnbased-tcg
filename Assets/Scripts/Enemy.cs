@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class Enemy : BasePlayer
 {
-    public static new string keyword = "ENEMY";
+    public void Awake()
+    {
+        keyword = "ENEMY";
+    }
 
     public override void Start()
     {
@@ -13,6 +16,7 @@ public class Enemy : BasePlayer
     }
     public IEnumerator StartTurn()
     {
+        isTurn = true;
         base.DrawCards();
         yield return new WaitForSeconds(1f);
 
@@ -26,12 +30,40 @@ public class Enemy : BasePlayer
         List<Card> cardsToPlay = new List<Card>();
         int numCardsToPlay = Mathf.Min(2, hand.Count);
         for (int i = 0; i < numCardsToPlay; i++) {
-            int randIndex = Random.Range(0, hand.Count);
-            IngredientCard c = (IngredientCard)hand[randIndex];
-            cardsToPlay.Add(c);
-            hand.RemoveAt(randIndex);
+            IngredientCard cardToPlay = (IngredientCard)GetCardToPlay();
+            RemoveCardFromHand(cardToPlay.cardId);
+            cardsToPlay.Add(cardToPlay);
         }
         return cardsToPlay;
+    }
+
+    public Card GetCardToPlay()
+    {
+        List<Card> playableCards = new List<Card>();
+        foreach (IngredientCard c in hand)
+        {
+            if (c.GetCardCost() <= heatBar.HeatAmount)
+            {
+                playableCards.Add(c);
+            }
+        }
+        int randIndex = Random.Range(0, playableCards.Count);
+        IngredientCard cardToPlay = (IngredientCard)playableCards[randIndex];
+        heatBar.SubtractHeat(cardToPlay.GetCardCost());
+        return cardToPlay;
+    }
+
+    public void RemoveCardFromHand(int cardId)
+    {
+        List<Card> newHand = new List<Card>();
+        foreach (IngredientCard c in hand)
+        {
+            if (c.cardId != cardId)
+            {
+                newHand.Add(c);
+            }
+        }
+        hand = newHand;
     }
 
     public IEnumerator PlayCards(List<Card> cards)

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 
 public class BasePlayer : MonoBehaviour
@@ -20,22 +19,28 @@ public class BasePlayer : MonoBehaviour
     [SerializeField]
     internal GameManager gameManager;
 
+    [SerializeField]
+    internal HeatBar heatBar;
+
     internal List<Card> hand = new List<Card>();
     internal Stack<Ingredient> deck;
     internal int numCardsInDeck = 30;
     internal int selectedCardId = -1;
     internal int numCardsToDraw = 2;
     internal int numCardsInHand = 5;
+    internal int initialHeatAmount = 3;
 
-    internal static string keyword = "BASE";
+    public string keyword = "BASE";
 
-    [System.Serializable]
+    internal bool isTurn = false;
+
+    [Serializable]
     public struct SavedDeck
     {
         public Ingredient[] deck;
     }
 
-    [System.Serializable]
+    [Serializable]
     public struct SavedHand
     {
         public Ingredient[] hand;
@@ -61,6 +66,25 @@ public class BasePlayer : MonoBehaviour
         {
             InitSavedHand(sh);
         }
+        InitHeatBar();
+    }
+
+    public void InitHeatBar()
+    {
+        int savedHeat = GetSavedHeat();
+        if (savedHeat > 0)
+        {
+            heatBar.TotalHeatAmount = savedHeat;
+        } else
+        {
+            heatBar.TotalHeatAmount = initialHeatAmount;
+        }
+        heatBar.ResetHeat();
+    }
+
+    public bool CheckCardPlayable(IngredientCard card)
+    {
+        return card.GetCardCost() <= heatBar.HeatAmount;
     }
 
     public virtual void SetScore(string keyword)
@@ -87,6 +111,16 @@ public class BasePlayer : MonoBehaviour
         SavedHand sh = new SavedHand { hand = ingredientsInHand };
         string savedHand = JsonUtility.ToJson(sh);
         PlayerPrefs.SetString(keyword + "_hand", savedHand);
+    }
+
+    internal void SaveHeat()
+    {
+        PlayerPrefs.SetInt(keyword + "_heat", heatBar.TotalHeatAmount);
+    }
+
+    internal int GetSavedHeat()
+    {
+        return PlayerPrefs.GetInt(keyword + "_heat");
     }
 
     internal Stack<Ingredient> GetSavedDeck()
@@ -136,9 +170,14 @@ public class BasePlayer : MonoBehaviour
         Vector3 pos = handLayout.position;
         for (int i = 0; i < numCardsToDraw; i++)
         {
-            IngredientCard card = CreateCard(deck.Pop(), pos);
-            hand.Add(card);
+            if (deck.Peek() != null)
+            {
+                IngredientCard card = CreateCard(deck.Pop(), pos);
+                hand.Add(card);
+            }
         }
+        SaveDeck();
+        SaveHand();
     }
 
     internal virtual void InitHand()
@@ -175,7 +214,18 @@ public class BasePlayer : MonoBehaviour
             }
         }
         return null;
+    }
 
+    public virtual void EndTurn()
+    {
+        SaveDeck();
+        SaveHand();
+
+        // Increase heat amount by 1
+        heatBar.TotalHeatAmount += 1;
+        heatBar.ResetHeat();
+        SaveHeat();
+        isTurn = false;
     }
 
     internal virtual IngredientCard CreateCard(Ingredient ing, Vector3 position)

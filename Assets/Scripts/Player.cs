@@ -5,23 +5,24 @@ using UnityEngine.UI;
 
 public class Player : BasePlayer
 {
-    public bool isTurn;
-    public static new string keyword = "PLAYER";
+    public void Awake()
+    {
+        isTurn = true;
+        keyword = "PLAYER";
+    }
 
     // Start is called before the first frame update
     public override void Start()
     {
         SetScore(keyword);
         base.Start();
-        isTurn = true;
         AttachClickListenersToCardsInHand();
     }
 
     public void StartTurn()
     {
+        isTurn = true;
         base.DrawCards();
-        SaveDeck();
-        SaveHand();
     }
 
     internal override IngredientCard CreateCard(Ingredient ing, Vector3 position)
@@ -65,7 +66,7 @@ public class Player : BasePlayer
 
     void SelectCard(int cardId)
     {
-        if (!isTurn)
+        if (!isTurn || !CheckCardPlayable(GetCardById(cardId)))
         {
             return;
         }
@@ -85,13 +86,12 @@ public class Player : BasePlayer
         {
             return;
         }
+
         IngredientCard selectedCard = GetCardById(selectedCardId);
         selectedCard.Deselect();
         gameManager.PlayCard(selectedCard, "player");
         RemoveSelectedCard();
 
-        // Save hand and deck for next round
-        SaveDeck();
-        SaveHand();
+        heatBar.SubtractHeat(selectedCard.GetCardCost());
     }
 }

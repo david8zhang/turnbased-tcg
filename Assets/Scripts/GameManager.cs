@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     Combiner.RecipeWithRating enemyRecipe;
     Combiner.RecipeWithRating playerRecipe;
 
+    readonly int winThreshold = 150;
+
     [System.Serializable]
     public struct RecipeToTransfer
     {
@@ -31,6 +33,18 @@ public class GameManager : MonoBehaviour
         public Sprite image;
         public int points;
         public int ratingMultiplier;
+    }
+
+
+    public void Start()
+    {
+        // Check for win condition
+        int playerPoints = PlayerPrefs.GetInt("PLAYER_score");
+        int enemyPoints = PlayerPrefs.GetInt("ENEMY_score");
+        if (playerPoints >= winThreshold || enemyPoints >= winThreshold)
+        {
+            SceneManager.LoadScene("Victory");
+        }
     }
 
     public void PlayCard(Card card, string side)
@@ -57,14 +71,21 @@ public class GameManager : MonoBehaviour
 
     public void EndPlayerTurn()
     {
-        enemyRecipe = ProcessIngredients(playerField);
+        // End the player turn
+        playerRecipe = ProcessIngredients(playerField);
+        player.EndTurn();
+
+        // Start the enemy turn
         StartCoroutine(enemy.StartTurn());
-        player.isTurn = false;
     }
 
     public IEnumerator EndEnemyTurn()
     {
-        playerRecipe = ProcessIngredients(enemyField);
+        // End the enemy turn
+        enemyRecipe = ProcessIngredients(enemyField);
+        enemy.EndTurn();
+
+        // Start the player's turn (so after judging round it's players turn again)
         player.StartTurn();
         yield return new WaitForSeconds(1.5f);
         GoToJudgingScene();
