@@ -5,6 +5,7 @@ using UnityEngine;
 public class FieldOfPlay : MonoBehaviour
 {
     public ArrayList cardsInPlay;
+    public DishCard dishCardPrefab;
 
     private void Start()
     {
@@ -27,9 +28,18 @@ public class FieldOfPlay : MonoBehaviour
         Ingredient[] ingredients = new Ingredient[cardsInPlay.Count];
         for (int i = 0; i < cardsInPlay.Count; i++)
         {
-            Card c = (Card)cardsInPlay[i];
+            IngredientCard c = (IngredientCard)cardsInPlay[i];
             ingredients[i] = c.ingRef;
         }
         return ingredients;
+    }
+
+    public void ClearCards()
+    {
+        foreach (Card c in cardsInPlay)
+        {
+            Destroy(c.gameObject);
+        }
+        cardsInPlay.Clear();
     }
 }

@@ -7,40 +7,40 @@ public class Player : BasePlayer
 {
     public bool isTurn;
 
+    public void Awake()
+    {
+        keyword = "PLAYER";
+    }
+
     // Start is called before the first frame update
     public override void Start()
     {
+        base.Start();
         isTurn = true;
-        GenerateRandomDeck();
-        InitHand();
+        AttachClickListenersToCardsInHand();
     }
 
     public void StartTurn()
     {
         base.DrawCards();
+        SaveDeck();
+        SaveHand();
     }
 
-    internal override Card CreateCard(Ingredient ing, Vector3 position)
+    internal override IngredientCard CreateCard(Ingredient ing, Vector3 position)
     {
-        Card card = base.CreateCard(ing, position);
+        IngredientCard card = base.CreateCard(ing, position);
         Button button = card.GetComponent<Button>();
         button.onClick.AddListener(() => SelectCard(card.cardId));
         return card;
     }
 
-    internal override void InitHand()
+    internal void AttachClickListenersToCardsInHand()
     {
-        Vector3 pos = handLayout.position;
-        for (int i = 0; i < numCardsInHand; i++)
+        foreach (IngredientCard c in hand)
         {
-            Ingredient ing = deck.Pop();
-            Card card = Instantiate(cardPrefab, pos, Quaternion.identity);
-            Button button = card.GetComponent<Button>();
-
-            button.onClick.AddListener(() => SelectCard(card.cardId));
-            card.transform.SetParent(handLayout, false);
-            card.SetCardInfo(ing);
-            hand.Add(card);
+            Button button = c.GetComponent<Button>();
+            button.onClick.AddListener(() => SelectCard(c.cardId));
         }
     }
 
@@ -50,11 +50,11 @@ public class Player : BasePlayer
         {
             return;
         }
-        Card cardToRemove = null;
+        IngredientCard cardToRemove = null;
         int indexToRemove = -1;
         for (int i = 0; i < hand.Count; i++)
         {
-            Card c = (Card)hand[i];
+            IngredientCard c = (IngredientCard)hand[i];
             if (c.cardId == selectedCardId)
             {
                 cardToRemove = c;
@@ -72,13 +72,13 @@ public class Player : BasePlayer
         {
             return;
         }
-        Card oldSelectedCard = GetCardById(selectedCardId);
+        IngredientCard oldSelectedCard = GetCardById(selectedCardId);
         if (oldSelectedCard)
         {
             oldSelectedCard.Deselect();
         }
         selectedCardId = cardId;
-        Card newSelectedCard = GetCardById(selectedCardId);
+        IngredientCard newSelectedCard = GetCardById(selectedCardId);
         newSelectedCard.Select();
     }
 
@@ -88,9 +88,13 @@ public class Player : BasePlayer
         {
             return;
         }
-        Card selectedCard = GetCardById(selectedCardId);
+        IngredientCard selectedCard = GetCardById(selectedCardId);
         selectedCard.Deselect();
         gameManager.PlayCard(selectedCard, "player");
         RemoveSelectedCard();
+
+        // Save hand and deck for next round
+        SaveDeck();
+        SaveHand();
     }
 }

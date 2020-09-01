@@ -6,7 +6,8 @@ using UnityEngine;
 public class Recipe : ScriptableObject
 {
     public string recipeName;
-    public int rating;
+    public int points;
+    public int ratingMultiplier;
     public Ingredient[] coreIngredients;
     public Ingredient[] enhancements;
     public Sprite image;

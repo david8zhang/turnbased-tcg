@@ -6,7 +6,7 @@ public class BasePlayer : MonoBehaviour
 {
 
     [SerializeField]
-    internal Card cardPrefab;
+    internal IngredientCard cardPrefab;
 
     [SerializeField]
     internal IngredientPool ingredientPool;
@@ -17,23 +17,105 @@ public class BasePlayer : MonoBehaviour
     [SerializeField]
     internal GameManager gameManager;
 
-    internal ArrayList hand;
+    internal List<Card> hand = new List<Card>();
     internal Stack<Ingredient> deck;
     internal int numCardsInDeck = 30;
     internal int selectedCardId = -1;
     internal int numCardsToDraw = 2;
     internal int numCardsInHand = 5;
 
-    public virtual void Start()
+    internal string keyword = "BASE";
+
+    [System.Serializable]
+    public struct SavedDeck
     {
-        GenerateRandomDeck();
-        InitHand();
+        public Ingredient[] deck;
     }
 
+    [System.Serializable]
+    public struct SavedHand
+    {
+        public Ingredient[] hand;
+    }
+
+    public virtual void Start()
+    {
+        Stack<Ingredient> sd = GetSavedDeck();
+        Ingredient[] sh = GetSavedHand();
+        if (sd == null)
+        {
+            GenerateRandomDeck();
+        }
+        else
+        {
+            deck = sd;
+        }
+        if (sh == null)
+        {
+            InitHand();
+        }
+        else
+        {
+            InitSavedHand(sh);
+        }
+    }
+
+    internal void SaveDeck()
+    {
+        SavedDeck sd = new SavedDeck { deck = deck.ToArray() };
+        string savedDeck = JsonUtility.ToJson(sd);
+        PlayerPrefs.SetString(keyword + "_deck", savedDeck);
+    }
+
+    internal void SaveHand()
+    {
+        Ingredient[] ingredientsInHand = new Ingredient[hand.Count];
+        for (int i = 0; i < hand.Count; i++)
+        {
+            IngredientCard card = (IngredientCard)(hand[i]);
+            ingredientsInHand[i] = card.ingRef;
+        }
+        SavedHand sh = new SavedHand { hand = ingredientsInHand };
+        string savedHand = JsonUtility.ToJson(sh);
+        PlayerPrefs.SetString(keyword + "_hand", savedHand);
+    }
+
+    internal Stack<Ingredient> GetSavedDeck()
+    {
+        string data = PlayerPrefs.GetString(keyword + "_deck");
+        if (data != "")
+        {
+            SavedDeck savedDeck = JsonUtility.FromJson<SavedDeck>(data);
+            Ingredient[] ingredients = savedDeck.deck;
+            Stack<Ingredient> deckStack = new Stack<Ingredient>();
+            for (int i = ingredients.Length - 1; i >= 0; i--)
+            {
+                deckStack.Push(ingredients[i]);
+            }
+            return deckStack;
+        } else
+        {
+            return null;
+        }
+    }
+
+    internal Ingredient[] GetSavedHand()
+    {
+        string data = PlayerPrefs.GetString(keyword + "_hand");
+        if (data != "")
+        {
+            SavedHand savedHand = JsonUtility.FromJson<SavedHand>(data);
+            return savedHand.hand;
+        }
+        else
+        {
+            return null;
+        }
+    }
+   
     internal void GenerateRandomDeck()
     {
         deck = new Stack<Ingredient>();
-        hand = new ArrayList();
         for (int i = 0; i < numCardsInDeck; i++)
         {
             deck.Push(ingredientPool.GetRandomIngredient());
@@ -45,7 +127,7 @@ public class BasePlayer : MonoBehaviour
         Vector3 pos = handLayout.position;
         for (int i = 0; i < numCardsToDraw; i++)
         {
-            Card card = CreateCard(deck.Pop(), pos);
+            IngredientCard card = CreateCard(deck.Pop(), pos);
             hand.Add(card);
         }
     }
@@ -60,13 +142,23 @@ public class BasePlayer : MonoBehaviour
         }
     }
 
-    public Card GetCardById(int cardId)
+    internal virtual void InitSavedHand(Ingredient[] savedHand)
+    {
+        Vector3 pos = handLayout.position;
+        for (int i = 0; i < savedHand.Length; i++)
+        {
+            Card card = CreateCard(savedHand[i], pos);
+            hand.Add(card);
+        }
+    }
+
+    public IngredientCard GetCardById(int cardId)
     {
         if (cardId != -1)
         {
             for (int i = 0; i < hand.Count; i++)
             {
-                Card c = (Card)hand[i];
+                IngredientCard c = (IngredientCard)hand[i];
                 if (c.cardId == cardId)
                 {
                     return c;
@@ -77,9 +169,9 @@ public class BasePlayer : MonoBehaviour
 
     }
 
-    internal virtual Card CreateCard(Ingredient ing, Vector3 position)
+    internal virtual IngredientCard CreateCard(Ingredient ing, Vector3 position)
     {
-        Card card = Instantiate(cardPrefab, position, Quaternion.identity);
+        IngredientCard card = Instantiate(cardPrefab, position, Quaternion.identity);
         card.transform.SetParent(handLayout, false);
         card.SetCardInfo(ing);
         return card;

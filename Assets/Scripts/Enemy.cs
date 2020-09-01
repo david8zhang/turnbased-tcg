@@ -9,42 +9,42 @@ public class Enemy : BasePlayer
         base.DrawCards();
         yield return new WaitForSeconds(1f);
 
-        ArrayList cards = GetCardsToPlay();
+        List<Card> cards = GetCardsToPlay();
         yield return StartCoroutine(PlayCards(cards));
-        gameManager.EndEnemyTurn();
+        StartCoroutine(gameManager.EndEnemyTurn());
     }
 
-    public ArrayList GetCardsToPlay()
+    public List<Card> GetCardsToPlay()
     {
-        ArrayList cardsToPlay = new ArrayList();
+        List<Card> cardsToPlay = new List<Card>();
         int numCardsToPlay = Mathf.Min(2, hand.Count);
         for (int i = 0; i < numCardsToPlay; i++) {
             int randIndex = Random.Range(0, hand.Count);
-            Card c = (Card)hand[randIndex];
-            hand.Remove(randIndex);
-            cardsToPlay.Add(c.cardId);
+            IngredientCard c = (IngredientCard)hand[randIndex];
+            cardsToPlay.Add(c);
+            hand.RemoveAt(randIndex);
         }
         return cardsToPlay;
     }
 
-    public IEnumerator PlayCards(ArrayList cards)
+    public IEnumerator PlayCards(List<Card> cards)
     {
-        ArrayList cardsToDestroy = new ArrayList();
+        List<Card> cardsToDestroy = new List<Card>();
         for (int i = 0; i < cards.Count; i++)
         {
-            int cardId = (int)cards[i];
-            Card c = GetCardById(cardId);
+            IngredientCard c = (IngredientCard)cards[i];
             gameManager.PlayCard(c, "enemy");
             cardsToDestroy.Add(c);
         }
         for (int i = 0; i < cardsToDestroy.Count; i++)
         {
-            Card c = (Card)cardsToDestroy[i];
+            IngredientCard c = (IngredientCard)cardsToDestroy[i];
+            Debug.Log(c);
             if (c)
             {
                 Destroy(c.gameObject);
             }
         }
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
     }
 }

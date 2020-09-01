@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: PanSearedSteak
   m_EditorClassIdentifier: 
   recipeName: Pan-Seared Steak
-  rating: 0
+  points: 10
+  ratingMultiplier: 3
   coreIngredients:
   - {fileID: 11400000, guid: ae92f8fdc884242e1b0e4c25cda70d3c, type: 2}
   enhancements:

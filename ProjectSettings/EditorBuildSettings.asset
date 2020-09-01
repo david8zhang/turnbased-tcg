@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Round.unity
     guid: e0c9ef8fb9d28412393b4ec88fefe333
+  - enabled: 1
+    path: Assets/Scenes/Judging.unity
+    guid: fe30e61d19ed844e3837964b95903c37
   m_configObjects: {}

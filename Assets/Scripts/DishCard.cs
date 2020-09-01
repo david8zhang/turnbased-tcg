@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
-public class DishCard : MonoBehaviour
+public class DishCard : Card
 {
     public Text dishName;
-    public Text rating;
+    public Text ratingLabel;
     public Image image;
 
-    public void CreateFromRecipe(Recipe recipe)
+    public void CreateFromRecipe(Recipe recipe, int rating)
     {
         dishName.text = recipe.recipeName;
-        rating.text = recipe.rating.ToString();
+        ratingLabel.text = rating.ToString();
         image.sprite = recipe.image;
     }
 }

@@ -45,4 +45,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipePool:
   - {fileID: 11400000, guid: 62a921110d0624cacb516846051438df, type: 2}
+  - {fileID: 11400000, guid: 8e9c39728431e46c48d25ae040ae7d11, type: 2}
   defaultRecipe: {fileID: 11400000, guid: 298c20a023ba3460c8d39b4200f022a9, type: 2}
+  dishCardPrefab: {fileID: 6685393952629070218, guid: f2acdc7a5cc0a4ba1b915b6e7367b2ae,
+    type: 3}

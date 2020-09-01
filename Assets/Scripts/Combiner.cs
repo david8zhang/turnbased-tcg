@@ -6,8 +6,15 @@ public class Combiner : MonoBehaviour
 {
     public Recipe[] recipePool;
     public Recipe defaultRecipe;
+    public DishCard dishCardPrefab;
 
-    public Recipe CombineIngredients(Ingredient[] ingredients)
+    public struct RecipeWithRating
+    {
+        public Recipe recipe;
+        public int rating;
+    }
+
+    public RecipeWithRating CombineIngredients(Ingredient[] ingredients)
     {
         foreach (Recipe r in recipePool) {
             HashSet<string> coreIngNames = GetNamesOfIngredients(r.coreIngredients);
@@ -17,13 +24,23 @@ public class Combiner : MonoBehaviour
                 // Check how many stars based on what enhancements were added
                 combinedIngNames.ExceptWith(coreIngNames);
                 HashSet<string> enhancementNames = GetNamesOfIngredients(r.enhancements);
+                combinedIngNames.IntersectWith(enhancementNames);
                 int numWrongIngs = Mathf.Abs(combinedIngNames.Count - r.enhancements.Length);
-                r.rating = Mathf.Max(5 - numWrongIngs, 1);
-                return r;
+                //r.rating = Mathf.Max(5 - numWrongIngs, 1);
+
+                return new RecipeWithRating
+                {
+                    recipe = r,
+                    rating = Mathf.Max(5 - numWrongIngs, 1)
+                };
             }
         }
-        defaultRecipe.rating = 0;
-        return defaultRecipe;
+        //defaultRecipe.rating = 0;
+        return new RecipeWithRating
+        {
+            recipe = defaultRecipe,
+            rating = 0
+        };
     }
 
     public HashSet<string> GetNamesOfIngredients(Ingredient[] ing)
@@ -34,5 +51,12 @@ public class Combiner : MonoBehaviour
             names.Add(ing[i].ingredientName);
         }
         return names;
+    }
+
+    public DishCard CreateDish(Recipe r, int rating)
+    {
+        DishCard dishCard = Instantiate(dishCardPrefab, Vector3.zero, Quaternion.identity);
+        dishCard.CreateFromRecipe(r, rating);
+        return dishCard;
     }
 }

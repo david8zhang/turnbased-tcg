@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c955026d1a18541f0af5b8b650c82144, type: 3}
+  m_Name: PepperedButter
+  m_EditorClassIdentifier: 
+  recipeName: Peppered Butter
+  points: 4
+  ratingMultiplier: 0
+  coreIngredients:
+  - {fileID: 11400000, guid: 6149da504e13249da9c497617cf60407, type: 2}
+  - {fileID: 11400000, guid: 8cff8604f987546afa09dc48b80c020d, type: 2}
+  enhancements: []
+  image: {fileID: 21300000, guid: 15f84e510ba46483fa68e6daac259a32, type: 3}
