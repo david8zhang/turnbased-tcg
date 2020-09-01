@@ -36,6 +36,7 @@ public class JudgingTable : MonoBehaviour
 
     public void GoToRound()
     {
+        
         SceneManager.LoadScene("Round");
     }
 
@@ -43,6 +44,12 @@ public class JudgingTable : MonoBehaviour
     {
         int totalPoints = rtt.points + (rtt.rating * rtt.ratingMultiplier);
         return totalPoints;
+    }
+
+    void AddPoints(string keyword, int points)
+    {
+        int currPoints = PlayerPrefs.GetInt(keyword + "_score");
+        PlayerPrefs.SetInt(keyword + "_score", currPoints + points);
     }
 
     IEnumerator CountPoints()
@@ -53,11 +60,14 @@ public class JudgingTable : MonoBehaviour
         playerDishToJudge.ShowPoints(playerPoints);
         enemyDishToJudge.ShowPoints(enemyPoints);
 
+        AddPoints(Player.keyword, playerPoints);
+        AddPoints(Enemy.keyword, enemyPoints);
+
         yield return new WaitForSeconds(1f);
         if (playerPoints > enemyPoints)
         {
             playerDishToJudge.SetWinner();
-        } else
+        } else if (enemyPoints > playerPoints)
         {
             enemyDishToJudge.SetWinner();
         }

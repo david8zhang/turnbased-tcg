@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class Enemy : BasePlayer
 {
+    public static new string keyword = "ENEMY";
+
+    public override void Start()
+    {
+        SetScore(keyword);
+        base.Start();
+    }
     public IEnumerator StartTurn()
     {
         base.DrawCards();
@@ -39,7 +46,6 @@ public class Enemy : BasePlayer
         for (int i = 0; i < cardsToDestroy.Count; i++)
         {
             IngredientCard c = (IngredientCard)cardsToDestroy[i];
-            Debug.Log(c);
             if (c)
             {
                 Destroy(c.gameObject);

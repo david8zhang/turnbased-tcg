@@ -6,15 +6,12 @@ using UnityEngine.UI;
 public class Player : BasePlayer
 {
     public bool isTurn;
-
-    public void Awake()
-    {
-        keyword = "PLAYER";
-    }
+    public static new string keyword = "PLAYER";
 
     // Start is called before the first frame update
     public override void Start()
     {
+        SetScore(keyword);
         base.Start();
         isTurn = true;
         AttachClickListenersToCardsInHand();

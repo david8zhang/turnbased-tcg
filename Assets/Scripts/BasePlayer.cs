@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
 public class BasePlayer : MonoBehaviour
 {
+    [SerializeField]
+    internal Score scoreObj;
 
     [SerializeField]
     internal IngredientCard cardPrefab;
@@ -24,7 +27,7 @@ public class BasePlayer : MonoBehaviour
     internal int numCardsToDraw = 2;
     internal int numCardsInHand = 5;
 
-    internal string keyword = "BASE";
+    internal static string keyword = "BASE";
 
     [System.Serializable]
     public struct SavedDeck
@@ -58,6 +61,12 @@ public class BasePlayer : MonoBehaviour
         {
             InitSavedHand(sh);
         }
+    }
+
+    public virtual void SetScore(string keyword)
+    {
+        int score = PlayerPrefs.GetInt(keyword + "_score");
+        scoreObj.SetScore(score);
     }
 
     internal void SaveDeck()
