@@ -20,10 +20,16 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     Combiner combiner;
 
+    [SerializeField]
+    Text roundLabel;
+
     Combiner.RecipeWithRating enemyRecipe;
     Combiner.RecipeWithRating playerRecipe;
 
-    readonly int winThreshold = 150;
+    public static readonly int winThreshold = 100;
+
+    int totalRounds = 8;
+    int currRound = 1;
 
     [System.Serializable]
     public struct RecipeToTransfer
@@ -38,12 +44,30 @@ public class GameManager : MonoBehaviour
 
     public void Start()
     {
-        // Check for win condition
-        int playerPoints = PlayerPrefs.GetInt("PLAYER_score");
-        int enemyPoints = PlayerPrefs.GetInt("ENEMY_score");
-        if (playerPoints >= winThreshold || enemyPoints >= winThreshold)
+        SetRound();
+        if (CheckWinCondition())
         {
             SceneManager.LoadScene("Victory");
+        }
+    }
+
+    public bool CheckWinCondition()
+    {
+        int playerPoints = PlayerPrefs.GetInt("PLAYER_score");
+        int enemyPoints = PlayerPrefs.GetInt("ENEMY_score");
+        return playerPoints >= winThreshold || enemyPoints >= winThreshold || currRound > totalRounds;
+    }
+
+    public void SetRound()
+    {
+        int savedRound = PlayerPrefs.GetInt("round_number");
+        currRound = savedRound > 0 ? savedRound : 1;
+        if (currRound == totalRounds)
+        {
+            roundLabel.text = "Final Round";
+        } else
+        {
+            roundLabel.text = "Round " + currRound;
         }
     }
 
@@ -93,6 +117,8 @@ public class GameManager : MonoBehaviour
 
     public void GoToJudgingScene()
     {
+        currRound++;
+        PlayerPrefs.SetInt("round_number", currRound);
         // serialize recipes from both sides
         RecipeToTransfer playerRecipeToTransfer = new RecipeToTransfer
         {

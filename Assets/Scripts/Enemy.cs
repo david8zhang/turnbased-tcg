@@ -31,8 +31,11 @@ public class Enemy : BasePlayer
         int numCardsToPlay = Mathf.Min(2, hand.Count);
         for (int i = 0; i < numCardsToPlay; i++) {
             IngredientCard cardToPlay = (IngredientCard)GetCardToPlay();
-            RemoveCardFromHand(cardToPlay.cardId);
-            cardsToPlay.Add(cardToPlay);
+            if (cardToPlay)
+            {
+                RemoveCardFromHand(cardToPlay.cardId);
+                cardsToPlay.Add(cardToPlay);
+            }
         }
         return cardsToPlay;
     }
@@ -46,6 +49,10 @@ public class Enemy : BasePlayer
             {
                 playableCards.Add(c);
             }
+        }
+        if (playableCards.Count == 0)
+        {
+            return null;
         }
         int randIndex = Random.Range(0, playableCards.Count);
         IngredientCard cardToPlay = (IngredientCard)playableCards[randIndex];

@@ -87,6 +87,12 @@ public class BasePlayer : MonoBehaviour
         return card.GetCardCost() <= heatBar.HeatAmount;
     }
 
+    public bool IsDeckEmpty()
+    {
+        Debug.Log(deck.Count);
+        return deck != null && deck.Count == 0;
+    }
+
     public virtual void SetScore(string keyword)
     {
         int score = PlayerPrefs.GetInt(keyword + "_score");
@@ -170,7 +176,7 @@ public class BasePlayer : MonoBehaviour
         Vector3 pos = handLayout.position;
         for (int i = 0; i < numCardsToDraw; i++)
         {
-            if (deck.Peek() != null)
+            if (deck.Count > 0)
             {
                 IngredientCard card = CreateCard(deck.Pop(), pos);
                 hand.Add(card);

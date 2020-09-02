@@ -10,13 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c955026d1a18541f0af5b8b650c82144, type: 3}
-  m_Name: PepperedButter
+  m_Name: BakedBeans
   m_EditorClassIdentifier: 
-  recipeName: Peppered Butter
-  points: 4
+  recipeName: Baked Beans
+  points: 5
   ratingMultiplier: 0
   coreIngredients:
-  - {fileID: 11400000, guid: 6149da504e13249da9c497617cf60407, type: 2}
-  - {fileID: 11400000, guid: 8cff8604f987546afa09dc48b80c020d, type: 2}
+  - {fileID: 11400000, guid: a15145e298799439293c61091bcca6f7, type: 2}
   enhancements: []
-  image: {fileID: 21300000, guid: 15f84e510ba46483fa68e6daac259a32, type: 3}
+  image: {fileID: 21300000, guid: 3c9253d2ef79a477497cf96c7d8448e1, type: 3}
