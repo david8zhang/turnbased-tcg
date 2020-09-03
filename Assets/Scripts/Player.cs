@@ -14,7 +14,7 @@ public class Player : BasePlayer
     // Start is called before the first frame update
     public override void Start()
     {
-        SetScore(keyword);
+        SetScore();
         base.Start();
         AttachClickListenersToCardsInHand();
     }
@@ -93,5 +93,11 @@ public class Player : BasePlayer
         RemoveSelectedCard();
 
         heatBar.SubtractHeat(selectedCard.GetCardCost());
+    }
+
+    public override void SetScore()
+    {
+        int score = PersistentState.Instance.playerScore;
+        scoreObj.SetScore(score);
     }
 }

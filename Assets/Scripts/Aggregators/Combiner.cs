@@ -11,6 +11,7 @@ public class Combiner : MonoBehaviour
     public struct RecipeWithRating
     {
         public Recipe recipe;
+        public Ingredient[] actualIngredients;
         public int rating;
     }
 
@@ -26,10 +27,10 @@ public class Combiner : MonoBehaviour
                 HashSet<string> enhancementNames = GetNamesOfIngredients(r.enhancements);
                 combinedIngNames.IntersectWith(enhancementNames);
                 int numWrongIngs = Mathf.Abs(combinedIngNames.Count - r.enhancements.Length);
-                //r.rating = Mathf.Max(5 - numWrongIngs, 1);
 
                 return new RecipeWithRating
                 {
+                    actualIngredients = ingredients,
                     recipe = r,
                     rating = Mathf.Max(5 - numWrongIngs, 1)
                 };
@@ -38,6 +39,7 @@ public class Combiner : MonoBehaviour
         //defaultRecipe.rating = 0;
         return new RecipeWithRating
         {
+            actualIngredients = ingredients,
             recipe = defaultRecipe,
             rating = 0
         };

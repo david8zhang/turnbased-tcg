@@ -8,8 +8,8 @@ public class JudgingTable : MonoBehaviour
     [SerializeField]
     DishToJudge dishPrefab;
 
-    GameManager.RecipeToTransfer playerRecipe;
-    GameManager.RecipeToTransfer enemyRecipe;
+    Combiner.RecipeWithRating playerRecipe;
+    Combiner.RecipeWithRating enemyRecipe;
 
     DishToJudge playerDishToJudge;
     DishToJudge enemyDishToJudge;
@@ -22,10 +22,8 @@ public class JudgingTable : MonoBehaviour
 
     public void SetDishes()
     {
-        string playerRecipeData = PlayerPrefs.GetString("player_recipe");
-        string enemyRecipeData = PlayerPrefs.GetString("enemy_recipe");
-        playerRecipe = JsonUtility.FromJson<GameManager.RecipeToTransfer>(playerRecipeData);
-        enemyRecipe = JsonUtility.FromJson<GameManager.RecipeToTransfer>(enemyRecipeData);
+        playerRecipe = PersistentState.Instance.playerRecipe;
+        enemyRecipe = PersistentState.Instance.enemyRecipe;
 
         playerDishToJudge = Instantiate(dishPrefab, transform);
         playerDishToJudge.CreateFromRecipe(playerRecipe);
@@ -36,20 +34,26 @@ public class JudgingTable : MonoBehaviour
 
     public void GoToRound()
     {
-        
         SceneManager.LoadScene("Round");
     }
 
-    public int CalculatePoints(GameManager.RecipeToTransfer rtt)
+    public int CalculatePoints(Combiner.RecipeWithRating rtt)
     {
-        int totalPoints = rtt.points + (rtt.rating * rtt.ratingMultiplier);
+        Recipe recipe = rtt.recipe;
+        Bonus.IngredientBonus[] bonusIngredients = PersistentState.Instance.bonusIngredients;
+        int bonusPoints = RoundBonuses.GetBonusPoints(rtt.actualIngredients, bonusIngredients);
+        int totalPoints = recipe.points + (rtt.rating * recipe.ratingMultiplier) + bonusPoints;
         return totalPoints;
     }
 
     void AddPoints(string keyword, int points)
     {
-        int currPoints = PlayerPrefs.GetInt(keyword + "_score");
-        PlayerPrefs.SetInt(keyword + "_score", currPoints + points);
+        int currScore = keyword == "PLAYER" ? PersistentState.Instance.playerScore : PersistentState.Instance.enemyScore;
+        currScore += points;
+        if (keyword == "PLAYER")
+            PersistentState.Instance.playerScore = currScore;
+        else
+            PersistentState.Instance.enemyScore = currScore;
     }
 
     IEnumerator CountPoints()

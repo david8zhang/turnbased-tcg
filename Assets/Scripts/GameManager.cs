@@ -23,24 +23,23 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     Text roundLabel;
 
+    [SerializeField]
+    RoundBonuses roundBonuses;
+
+    [SerializeField]
+    Transform bonusList;
+
+    [SerializeField]
+    GameObject bonusText;
+
     Combiner.RecipeWithRating enemyRecipe;
     Combiner.RecipeWithRating playerRecipe;
+    Bonus.IngredientBonus[] bonusIngredients;
 
     public static readonly int winThreshold = 100;
 
     int totalRounds = 8;
     int currRound = 1;
-
-    [System.Serializable]
-    public struct RecipeToTransfer
-    {
-        public string recipeName;
-        public int rating;
-        public Sprite image;
-        public int points;
-        public int ratingMultiplier;
-    }
-
 
     public void Start()
     {
@@ -48,19 +47,33 @@ public class GameManager : MonoBehaviour
         if (CheckWinCondition())
         {
             SceneManager.LoadScene("Victory");
+        } else
+        {
+            SetupBonuses();
+        }
+    }
+
+    void SetupBonuses()
+    {
+        bonusIngredients = roundBonuses.GetIngredientBonuses(currRound);
+        foreach (Bonus.IngredientBonus ib in bonusIngredients)
+        {
+            GameObject bonusTextClone = Instantiate(bonusText, bonusList);
+            bonusTextClone.GetComponent<Text>().text = "Bonus: " + ib.ing.ingredientName;
         }
     }
 
     public bool CheckWinCondition()
     {
-        int playerPoints = PlayerPrefs.GetInt("PLAYER_score");
-        int enemyPoints = PlayerPrefs.GetInt("ENEMY_score");
+        Debug.Log(currRound);
+        int playerPoints = PersistentState.Instance.playerScore;
+        int enemyPoints = PersistentState.Instance.enemyScore;
         return playerPoints >= winThreshold || enemyPoints >= winThreshold || currRound > totalRounds;
     }
 
     public void SetRound()
     {
-        int savedRound = PlayerPrefs.GetInt("round_number");
+        int savedRound = PersistentState.Instance.round;
         currRound = savedRound > 0 ? savedRound : 1;
         if (currRound == totalRounds)
         {
@@ -80,7 +93,6 @@ public class GameManager : MonoBehaviour
         {
             enemyField.PlayCard(card);
         }
-
     }
 
     Combiner.RecipeWithRating ProcessIngredients(FieldOfPlay field)
@@ -118,28 +130,10 @@ public class GameManager : MonoBehaviour
     public void GoToJudgingScene()
     {
         currRound++;
-        PlayerPrefs.SetInt("round_number", currRound);
-        // serialize recipes from both sides
-        RecipeToTransfer playerRecipeToTransfer = new RecipeToTransfer
-        {
-            recipeName = playerRecipe.recipe.recipeName,
-            rating = playerRecipe.rating,
-            image = playerRecipe.recipe.image,
-            points = playerRecipe.recipe.points,
-            ratingMultiplier = playerRecipe.recipe.ratingMultiplier
-        };
-
-        RecipeToTransfer enemyRecipeToTransfer = new RecipeToTransfer
-        {
-            recipeName = enemyRecipe.recipe.recipeName,
-            rating = enemyRecipe.rating,
-            image = enemyRecipe.recipe.image,
-            points = enemyRecipe.recipe.points,
-            ratingMultiplier = enemyRecipe.recipe.ratingMultiplier
-        };
-
-        PlayerPrefs.SetString("player_recipe", JsonUtility.ToJson(playerRecipeToTransfer));
-        PlayerPrefs.SetString("enemy_recipe", JsonUtility.ToJson(enemyRecipeToTransfer));
+        PersistentState.Instance.bonusIngredients = bonusIngredients;
+        PersistentState.Instance.round = currRound;
+        PersistentState.Instance.playerRecipe = playerRecipe;
+        PersistentState.Instance.enemyRecipe = enemyRecipe;
         SceneManager.LoadScene("Judging");
     }
 }

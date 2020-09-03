@@ -58,7 +58,7 @@ public class BasePlayer : MonoBehaviour
         {
             deck = sd;
         }
-        if (sh == null)
+        if (sh.Length == 0)
         {
             InitHand();
         }
@@ -89,21 +89,16 @@ public class BasePlayer : MonoBehaviour
 
     public bool IsDeckEmpty()
     {
-        Debug.Log(deck.Count);
         return deck != null && deck.Count == 0;
     }
 
-    public virtual void SetScore(string keyword)
+    public virtual void SetScore()
     {
-        int score = PlayerPrefs.GetInt(keyword + "_score");
-        scoreObj.SetScore(score);
     }
 
     internal void SaveDeck()
     {
-        SavedDeck sd = new SavedDeck { deck = deck.ToArray() };
-        string savedDeck = JsonUtility.ToJson(sd);
-        PlayerPrefs.SetString(keyword + "_deck", savedDeck);
+        PersistentState.Instance.SetDeck(keyword, deck);
     }
 
     internal void SaveHand()
@@ -114,52 +109,27 @@ public class BasePlayer : MonoBehaviour
             IngredientCard card = (IngredientCard)(hand[i]);
             ingredientsInHand[i] = card.ingRef;
         }
-        SavedHand sh = new SavedHand { hand = ingredientsInHand };
-        string savedHand = JsonUtility.ToJson(sh);
-        PlayerPrefs.SetString(keyword + "_hand", savedHand);
+        PersistentState.Instance.SetHand(keyword, ingredientsInHand);
     }
 
     internal void SaveHeat()
     {
-        PlayerPrefs.SetInt(keyword + "_heat", heatBar.TotalHeatAmount);
+        PersistentState.Instance.SetHeat(keyword, heatBar.TotalHeatAmount);
     }
 
     internal int GetSavedHeat()
     {
-        return PlayerPrefs.GetInt(keyword + "_heat");
+        return PersistentState.Instance.GetHeat(keyword);
     }
 
     internal Stack<Ingredient> GetSavedDeck()
     {
-        string data = PlayerPrefs.GetString(keyword + "_deck");
-        if (data != "")
-        {
-            SavedDeck savedDeck = JsonUtility.FromJson<SavedDeck>(data);
-            Ingredient[] ingredients = savedDeck.deck;
-            Stack<Ingredient> deckStack = new Stack<Ingredient>();
-            for (int i = ingredients.Length - 1; i >= 0; i--)
-            {
-                deckStack.Push(ingredients[i]);
-            }
-            return deckStack;
-        } else
-        {
-            return null;
-        }
+        return PersistentState.Instance.GetDeck(keyword);
     }
 
     internal Ingredient[] GetSavedHand()
     {
-        string data = PlayerPrefs.GetString(keyword + "_hand");
-        if (data != "")
-        {
-            SavedHand savedHand = JsonUtility.FromJson<SavedHand>(data);
-            return savedHand.hand;
-        }
-        else
-        {
-            return null;
-        }
+        return PersistentState.Instance.GetHand(keyword);
     }
    
     internal void GenerateRandomDeck()

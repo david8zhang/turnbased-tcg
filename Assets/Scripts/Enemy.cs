@@ -7,11 +7,12 @@ public class Enemy : BasePlayer
     public void Awake()
     {
         keyword = "ENEMY";
+        numCardsInHand = 3;
     }
 
     public override void Start()
     {
-        SetScore(keyword);
+        SetScore();
         base.Start();
     }
     public IEnumerator StartTurn()
@@ -91,5 +92,11 @@ public class Enemy : BasePlayer
             }
         }
         yield return new WaitForSeconds(1f);
+    }
+
+    public override void SetScore()
+    {
+        int score = PersistentState.Instance.enemyScore;
+        scoreObj.SetScore(score);
     }
 }

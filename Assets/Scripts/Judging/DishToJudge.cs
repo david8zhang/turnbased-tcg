@@ -12,11 +12,12 @@ public class DishToJudge : MonoBehaviour
     public GameObject pointsLabelWrapper;
     public Image border;
 
-    public void CreateFromRecipe(GameManager.RecipeToTransfer r)
+    public void CreateFromRecipe(Combiner.RecipeWithRating recipeWithRating)
     {
-        dishName.text = r.recipeName;
-        image.sprite = r.image;
-        rating.text = r.rating.ToString();
+        Recipe recipe = recipeWithRating.recipe;
+        dishName.text = recipe.recipeName;
+        image.sprite = recipe.image;
+        rating.text = recipeWithRating.rating.ToString();
 
     }
 

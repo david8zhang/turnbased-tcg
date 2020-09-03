@@ -19,8 +19,8 @@ public class Victory : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        int playerPoints = PlayerPrefs.GetInt("PLAYER_score");
-        int enemyPoints = PlayerPrefs.GetInt("ENEMY_score");
+        int playerPoints = PersistentState.Instance.playerScore;
+        int enemyPoints = PersistentState.Instance.enemyScore;
 
         if (playerPoints == enemyPoints)
         {
@@ -45,7 +45,7 @@ public class Victory : MonoBehaviour
 
     public void GoToMainMenu()
     {
-        PlayerPrefs.DeleteAll();
+        PersistentState.Instance.Clear();
         SceneManager.LoadScene("MainMenu");
     }
 }

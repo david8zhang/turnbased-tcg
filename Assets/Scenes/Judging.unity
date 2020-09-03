@@ -545,10 +545,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1392438476}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ffa5c5cf2d6ff41db985c86d41e078eb, type: 3}
+  m_Script: {fileID: 11500000, guid: bb00076ec967a4af5a7f332cf0e7d3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dishPrefab: {fileID: 3635155299641159154, guid: dea5a33a36c0b4a7e85a9dac859b6950,
+  dishPrefab: {fileID: 3909521663618486984, guid: 415291ed89e804910bce8413d39a6d92,
     type: 3}
 --- !u!1 &1577684711
 GameObject:
